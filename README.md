@@ -31,7 +31,7 @@ Note : make all the downloaded dataset in the dataset directory
 
 python3 '/your-path-to-the-project/Predection_Treanscoding_Time_Algorithm.py' \
 -p '/your-path-to-the-project' \
--o 'all_method' 
+-o 'all_method' -ds 'SVD_NVD' 'Zabrovskiy et al.'
 
 # you will see
 
