@@ -1,29 +1,30 @@
-#creat by Chachou Taieb (^_^)
+# Created by Chachou Taieb (^_^)
 import os
 import argparse
 import pandas as pd
 import xgboost as xgb
 import lightgbm as ltb
-from tensorflow.keras.wrappers.scikit_learn import KerasRegressor
+from scikeras.wrappers import KerasRegressor  # Updated import
 from sklearn.neighbors import KNeighborsRegressor
-from sklearn.metrics import r2_score
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 import numpy as np
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.utils import shuffle
 from tqdm import tqdm
-#model for tensorflow
+
+# Model for TensorFlow
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import models, layers
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Activation, Dense
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.optimizers import Adadelta
+from tensorflow.keras.optimizers import Adam, Adadelta
+
+# Ensure TensorFlow and NumPy compatibility
+print(f"TensorFlow Version: {tf.__version__}")
+print(f"NumPy Version: {np.__version__}")
 
 class machine_learning:
 
@@ -39,14 +40,14 @@ class machine_learning:
         # 'Resolution', 'Height', 'Frame_rate','Codec',
         sh = 0
         if "SVD_NVD" in ds:    
-            csv_dataset = path_project+'/dataset/TTP2021_SVD_NVD_CPU_GPU_FS.csv'
+            csv_dataset = path_project+'/dataset/VTTP2025_SVD_NVD_CPU_GPU_FS.csv'
             path_nbf = path_project+'/dataset/FeatresImportance_SVD_NVD.csv'
-            nbf = pd.read_csv(path_nbf, error_bad_lines=False, sep = ',')
-            TTP2021 = nbf["key"].to_list()
-            TTP2021 = ['TR_Video',  'Video', 'Segment']+TTP2021[0:22]+['TR_Rtime']
+            nbf = pd.read_csv(path_nbf, on_bad_lines='skip', sep = ',')
+            VTTP2025 = nbf["key"].to_list()
+            VTTP2025 = ['TR_Video',  'Video', 'Segment']+VTTP2025[0:22]+['TR_Rtime']
 
             ti  = 'TR_Rtime'
-            dataset = pd.read_csv(csv_dataset, error_bad_lines=False, sep = ',')
+            dataset = pd.read_csv(csv_dataset, on_bad_lines='skip', sep = ',')
             dataset = shuffle(dataset)
             dataset = shuffle(dataset)
             X = dataset
@@ -58,13 +59,13 @@ class machine_learning:
             y_preds_list = []
             
             
-            y_preds_list.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'XGB', "SVD_NVD"))
+            y_preds_list.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'XGB', "SVD_NVD"))
             print('XGB 100%', y_preds_list[-1][1])
-            y_preds_list.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'LGB', "SVD_NVD"))
+            y_preds_list.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'LGB', "SVD_NVD"))
             print('LGB 100%', y_preds_list[-1][1])
-            y_preds_list.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'ANN', "SVD_NVD"))
+            y_preds_list.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'ANN', "SVD_NVD"))
             print('ANN 100%', y_preds_list[-1][1])
-            y_preds_list.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'KNN', "SVD_NVD"))
+            y_preds_list.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_all, y_train, y_test, "SVD_NVD", 'KNN', "SVD_NVD"))
             print('KNN 100%', y_preds_list[-1][1])
            
 
@@ -72,14 +73,14 @@ class machine_learning:
 
         #-------------------------------------------------- DS_Zabrovskiy_al-----
         if 'Zabrovskiy et al.' in ds:
-            csv_dataset = path_project+'/dataset/DS_Zabrovskiy_al_TTP2021.csv' 
+            csv_dataset = path_project+'/dataset/DS_Zabrovskiy_al_VTTP2025.csv' 
             path_nbf = path_project+'/dataset/FeatresImportance_SVD_NVD.csv'
-            nbf = pd.read_csv(path_nbf, error_bad_lines=False, sep = ',')
-            TTP2021 = nbf["key"].to_list()
-            TTP2021 = ['TR_Video',  'Video', 'Segment']+TTP2021[0:22]+['encoding_time']
+            nbf = pd.read_csv(path_nbf, on_bad_lines='skip', sep = ',')
+            VTTP2025 = nbf["key"].to_list()
+            VTTP2025 = ['TR_Video',  'Video', 'Segment']+VTTP2025[0:22]+['encoding_time']
             ti  = 'encoding_time'
 
-            dataset = pd.read_csv(csv_dataset, error_bad_lines=False, sep = ',')
+            dataset = pd.read_csv(csv_dataset, on_bad_lines='skip', sep = ',')
             dataset = shuffle(dataset)
             dataset = shuffle(dataset)
             X = dataset
@@ -91,13 +92,13 @@ class machine_learning:
             y_preds_list1 = []
             
             
-            y_preds_list1.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'XGB', 'Zabrovskiy_DS'))
+            y_preds_list1.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'XGB', 'Zabrovskiy_DS'))
             print('XGB 100%')
-            y_preds_list1.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'LGB', 'Zabrovskiy_DS'))
+            y_preds_list1.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'LGB', 'Zabrovskiy_DS'))
             print('LGB 100%')
-            y_preds_list1.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'ANN', 'Zabrovskiy_DS'))
+            y_preds_list1.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'ANN', 'Zabrovskiy_DS'))
             print('ANN 100%')
-            y_preds_list1.append(self.TTP2021(path_project, TTP2021, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'KNN', 'Zabrovskiy_DS'))
+            y_preds_list1.append(self.VTTP2025(path_project, VTTP2025, X_train_all, X_test_allZabr, y_train, y_testZabr, 'Zabrovskiy et al.', 'KNN', 'Zabrovskiy_DS'))
             print('KNN 100%')
            
 
@@ -292,20 +293,20 @@ class machine_learning:
                 
 
 #********************************************************************************************************************
-#---------------------------------------------- TTP2021 ---------------------------------------------------------
+#---------------------------------------------- VTTP2025 ---------------------------------------------------------
 #********************************************************************************************************************            
 
-    def TTP2021(self, path_project,  TTP2021, X_train_all, X_test_all, y_train, y_test, ds, ml, tds):
-        X_trainfinal, X_testfinal, y_trainfinal, y_testfinal, tri  = self.train_test_split1(TTP2021, X_train_all, X_test_all, y_train, y_test, ds)
+    def VTTP2025(self, path_project,  VTTP2025, X_train_all, X_test_all, y_train, y_test, ds, ml, tds):
+        X_trainfinal, X_testfinal, y_trainfinal, y_testfinal, tri  = self.train_test_split1(VTTP2025, X_train_all, X_test_all, y_train, y_test, ds)
         y_predsfinal = []
         df = []
         for k in range(len(X_trainfinal)):
             scaler = MinMaxScaler(feature_range=(0, 1))
-            dim = X_trainfinal[k].shape
-            x = X_trainfinal[k].append(X_testfinal[k], ignore_index=True)
-            x = scaler.fit_transform(x.iloc[:, 3:-1])
-            X_train_scaled = x[: dim[0], :]
-            X_test_scaled = x[dim[0] :, :]
+            dim = X_trainfinal[k].shape # Get the dimensions of the training dataset.
+            x = pd.concat([X_trainfinal[k], X_testfinal[k]], ignore_index=True) # Merging the training and test datasets to apply the scaler transformation.
+            x = scaler.fit_transform(x.iloc[:, 3:-1]) 
+            X_train_scaled = x[: dim[0], :] # Extract the training dataset from the full dataset.
+            X_test_scaled = x[dim[0] :, :] # Extract the testing dataset from the full dataset.
             X_testcsv = x[dim[0] :, :]
             eval_set1 = [(X_train_scaled, y_trainfinal[k]), (X_test_scaled, y_testfinal[k])]
             #make able to run code in GPU and identifier the memory
@@ -315,12 +316,22 @@ class machine_learning:
             if ml == 'XGB':                
                 model = xgb.XGBRegressor(objective ='reg:tweedie', colsample_bytree = 0.97, learning_rate = 0.07, 
                                      subsample = 1, max_depth = 5, reg_alpha = 0.1, n_estimators = 1000, tree_method='gpu_hist')
-                model.fit(X_train_scaled, y_trainfinal[k], eval_metric=["rmse"], eval_set=eval_set1, verbose=False)
+                params = {
+                    "eval_metric": "rmse"  # Move eval_metric inside params
+                }
+                model.set_params(**params)  # Update model parameters
+                model.fit(X_train_scaled, y_trainfinal[k], eval_set=eval_set1, verbose=False)
+                
 
             elif ml == 'LGB':
                 model = ltb.LGBMRegressor(colsample_bytree = 1, learning_rate = 0.1, num_leaves= 15,
                                     subsample = 1, max_depth = 8, reg_alpha =0.7, n_estimators=1000 )
-                model.fit(X_train_scaled, y_trainfinal[k], eval_set=eval_set1,  eval_metric=["rmse"], verbose=False)
+                params = {
+                    "verbose": -1, 
+                    "eval_metric": "rmse" 
+                }
+                model.set_params(**params)
+                model.fit(X_train_scaled, y_trainfinal[k], eval_set=eval_set1)
             elif ml == 'KNN':
                 model = KNeighborsRegressor(n_neighbors = 21, weights = 'distance') #21
                 model.fit(X_train_scaled, y_trainfinal[k])
@@ -339,14 +350,14 @@ class machine_learning:
             
             y_preds = model.predict(X_test_scaled) # testing the modele
             y_predsfinal.append(y_preds)
-            columns = TTP2021[3:-1]
+            columns = VTTP2025[3:-1]
             df.append(pd.DataFrame(data= X_testcsv, columns=columns))
         trifinal = []
         y_predsfi = []
         y_testfin = []
         y_predsfin = []
         if len(df) == 2:
-            bigdata = df[0].append(df[1], ignore_index=True)
+            bigdata = pd.concat([df[0], df[1]], ignore_index=True)
         else:
             bigdata = df[0]
         for i in range(len(tri)):
@@ -358,7 +369,7 @@ class machine_learning:
        
         bigdata.insert(idf, 'Y_trus' , y_testfin, True) 
         bigdata.insert(idf, 'Y_predit' , y_predsfin, True) 
-        bigdata.to_excel(path_project+'/results/TTP2021_'+tds+'_'+ml+'_ypred.xlsx', index = False)
+        bigdata.to_excel(path_project+'/results/VTTP2025_'+tds+'_'+ml+'_ypred.xlsx', index = False)
         zpred = zip(y_predsfi, trifinal)
         zpred = sorted(list(zpred), key = lambda x: x[1], reverse=False)
         ypredf, tri1 = zip(*zpred)
@@ -368,11 +379,11 @@ class machine_learning:
 #***************************************************************************************************************************************************
    
     
-    def train_test_split1(self, TTP2021, X_train_all, X_test_all, y_train, y_test, ds):
+    def train_test_split1(self, VTTP2025, X_train_all, X_test_all, y_train, y_test, ds):
         if ds == 'Zabrovskiy et al.':
             X_train = pd.DataFrame()
             X_test = pd.DataFrame()
-            for i, key in enumerate(TTP2021):
+            for i, key in enumerate(VTTP2025):
                 X_train.insert(i, key, list(X_train_all[key]), True)
                 X_test.insert(i, key, list(X_test_all[key]), True)
             return [[X_train], [X_test], [y_train], [pd.DataFrame(np.array(y_test), columns=["Ytest"])], [list(range(len(y_test)))]]
@@ -382,7 +393,7 @@ class machine_learning:
             X_train = pd.DataFrame()
             X_test = pd.DataFrame()
             
-            for i, key in enumerate(TTP2021):
+            for i, key in enumerate(VTTP2025):
                 X_train.insert(i, key, list(X_train_all[key]), True)
                 X_test.insert(i, key, list(X_test_all[key]), True)
             gpuTR = []
